@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Generator Order Final</title>
+    <title>Form Gen Order</title>
     <style>
-        /* === PERUBAHAN FONT DI SINI === */
         @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap');
         
         body { 
-            /* Font utama diubah ke Figtree */
             font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background-color: #f8f9fa; 
             color: #212529; 
@@ -57,6 +55,7 @@
             box-sizing: border-box;
             transition: border-color 0.2s, box-shadow 0.2s;
             background-color: #fff;
+            font-family: 'Figtree', sans-serif;
         }
         
         input:focus, select:focus {
@@ -78,6 +77,7 @@
             cursor: pointer; 
             margin-top: 25px;
             transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Figtree', sans-serif;
         }
 
         button:hover {
@@ -87,21 +87,21 @@
 
         textarea { 
             width: 100%; 
-            height: 280px;
+            height: 340px; 
             margin-top: 20px; 
             padding: 15px; 
             border: 1px solid #ced4da; 
             border-radius: 8px; 
             background-color: #e9ecef; 
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Figtree', sans-serif;
             font-size: 14px;
             box-sizing: border-box;
             line-height: 1.6;
         }
 
         .button-copy {
-             background: linear-gradient(90deg, #28a745, #218838);
-             margin-top: 10px;
+            background: linear-gradient(90deg, #28a745, #218838);
+            margin-top: 10px;
         }
         .button-copy:hover {
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
@@ -110,6 +110,10 @@
         #customEmailContainer {
             display: none;
             margin-top: 10px;
+        }
+        
+        #manualEmailContainer {
+            display: none;
         }
 
     </style>
@@ -120,18 +124,49 @@
         <h2>⚡ Auto-Generate Order</h2>
 
         <div class="form-group">
-            <label for="emailSelect">Pilih Email Pelanggan:</label>
-            <select id="emailSelect">
-                <option value="asderx@ichiro.my.id">asderx@ichiro.my.id</option>
-                <option value="weirdo@ichiro.my.id">weirdo@ichiro.my.id</option>
-                <option value="chinys@ichiro.my.id">chinys@ichiro.my.id</option>
-                <option value="yadhun@storedaffa.my.id">yadhun@storedaffa.my.id</option>
-                <option value="mantap@storedaffa.my.id">mantap@storedaffa.my.id</option>
-                <option value="custom">-- Ketik Email Lain --</option>
+            <label for="platform">Platform Akun:</label>
+            <select id="platform">
+                <option value="Netflix Premium">Netflix Premium</option>
+                <option value="Capcut Pro">Capcut Pro</option>
+                <option value="HMA VPN">HMA VPN</option>
+                <option value="Express VPN">Express VPN</option>
+                <option value="Canva Pro">Canva Pro</option>
+                <option value="Spotify Premium">Spotify Premium</option>
+                <option value="Youtube Premium">Youtube Premium</option>
+                <option value="Prime Video">Prime Video</option>
+                <option value="Surfshark VPN">Surfshark VPN</option>
+                <option value="Disney+ Hotstar">Disney+ Hotstar</option>
             </select>
         </div>
-        <div class="form-group" id="customEmailContainer">
-            <input type="email" id="customEmailInput" placeholder="Masukkan email kustom di sini">
+        
+        <div class="form-group">
+            <label for="accountType">Tipe Akun:</label>
+            <select id="accountType">
+                <option value="Sharing">Sharing</option>
+                <option value="Private">Private</option>
+            </select>
+        </div>
+
+        <div id="netflixEmailContainer">
+            <div class="form-group">
+                <label for="emailSelect">Pilih Email Pelanggan (Netflix):</label>
+                <select id="emailSelect">
+                    <option value="asderx@ichiro.my.id">asderx@ichiro.my.id</option>
+                    <option value="weirdo@ichiro.my.id">weirdo@ichiro.my.id</option>
+                    <option value="chinys@ichiro.my.id">chinys@ichiro.my.id</option>
+                    <option value="yadhun@storedaffa.my.id">yadhun@storedaffa.my.id</option>
+                    <option value="mantap@storedaffa.my.id">mantap@storedaffa.my.id</option>
+                    <option value="custom">-- Ketik Email Lain --</option>
+                </select>
+            </div>
+            <div class="form-group" id="customEmailContainer">
+                <input type="email" id="customEmailInput" placeholder="Masukkan email kustom di sini">
+            </div>
+        </div>
+        
+        <div class="form-group" id="manualEmailContainer">
+             <label for="manualEmailInput">Email Pelanggan:</label>
+            <input type="email" id="manualEmailInput" placeholder="Masukkan email akun">
         </div>
 
         <div class="form-group">
@@ -139,18 +174,21 @@
             <input type="text" id="password" placeholder="Masukkan password akun">
         </div>
 
-        <div class="form-group">
-            <label for="profileName">Nama Profil:</label>
-            <input type="text" id="profileName" placeholder="Contoh: Budi">
-        </div>
-        <div class="form-group">
-            <label for="pin">PIN:</label>
-            <input type="text" id="pin" placeholder="Contoh: 1234 (Kosongkan jika tidak ada)">
+        <div id="netflixSpecificFields">
+            <div class="form-group">
+                <label for="profileName">Nama Profil:</label>
+                <input type="text" id="profileName" placeholder="Contoh: Budi">
+            </div>
+            <div class="form-group">
+                <label for="pin">PIN (Opsional):</label>
+                <input type="text" id="pin" placeholder="Contoh: 1234 (Kosongkan jika tidak ada)">
+            </div>
         </div>
         
         <div class="form-group">
             <label for="duration">Durasi Langganan:</label>
             <select id="duration">
+                <option value="7d">7 Hari</option>
                 <option value="1">1 Bulan</option>
                 <option value="2">2 Bulan</option>
                 <option value="3">3 Bulan</option>
@@ -173,6 +211,27 @@
     </div>
 
     <script>
+        const platformSelect = document.getElementById('platform');
+        const netflixEmailContainer = document.getElementById('netflixEmailContainer');
+        const manualEmailContainer = document.getElementById('manualEmailContainer');
+        const netflixSpecificFields = document.getElementById('netflixSpecificFields');
+        
+        function toggleForms() {
+            const selectedPlatform = platformSelect.value;
+            if (selectedPlatform === 'Netflix Premium') {
+                netflixEmailContainer.style.display = 'block';
+                manualEmailContainer.style.display = 'none';
+                netflixSpecificFields.style.display = 'block';
+            } else {
+                netflixEmailContainer.style.display = 'none';
+                manualEmailContainer.style.display = 'block';
+                netflixSpecificFields.style.display = 'none';
+                document.getElementById('manualEmailInput').focus();
+            }
+        }
+        
+        platformSelect.addEventListener('change', toggleForms);
+
         document.getElementById('emailSelect').addEventListener('change', function() {
             const customEmailContainer = document.getElementById('customEmailContainer');
             if (this.value === 'custom') {
@@ -182,57 +241,94 @@
                 customEmailContainer.style.display = 'none';
             }
         });
+        
+        document.addEventListener('DOMContentLoaded', toggleForms);
 
         function generateOrder() {
-            const emailSelect = document.getElementById('emailSelect');
-            let email = emailSelect.value;
-            if (email === 'custom') {
-                email = document.getElementById('customEmailInput').value;
+            const platform = platformSelect.value;
+            const accountType = document.getElementById('accountType').value;
+            
+            let email = '';
+            if (platform === 'Netflix Premium') {
+                const emailSelect = document.getElementById('emailSelect');
+                email = emailSelect.value;
+                if (email === 'custom') {
+                    email = document.getElementById('customEmailInput').value;
+                }
+            } else {
+                email = document.getElementById('manualEmailInput').value;
             }
 
             const password = document.getElementById('password').value;
             const profileName = document.getElementById('profileName').value;
             const pin = document.getElementById('pin').value;
-
+            
             const durationSelect = document.getElementById('duration');
-            const durationValue = parseInt(durationSelect.value);
+            const durationValue = durationSelect.value;
             const durationText = durationSelect.options[durationSelect.selectedIndex].text;
             
-            if (!email || !password || !profileName) {
-                alert('Harap isi kolom Email, Password, dan Nama Profil!');
+            if (!email || !password) {
+                alert('Harap isi kolom Email dan Password!');
+                return;
+            }
+            if (platform === 'Netflix Premium' && !profileName) {
+                alert('Untuk Netflix, Nama Profil wajib diisi!');
                 return;
             }
 
             const startDate = new Date();
             const endDate = new Date(startDate);
-            endDate.setMonth(startDate.getMonth() + durationValue);
+            
+            if (durationValue === '7d') {
+                endDate.setDate(startDate.getDate() + 7);
+            } else {
+                endDate.setMonth(startDate.getMonth() + parseInt(durationValue));
+            }
 
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             const formattedEndDate = endDate.toLocaleDateString('id-ID', options);
-
             const timestamp = Date.now();
             const kodeTransaksi = `TRX-${timestamp.toString().slice(-8)}`;
+            
+          
+            const labelPadding = 14; // Jarak terpanjang dari label "Kode Transaksi"
+            
+            let templateLines = [
+                `*[AKUN ${platform.toUpperCase()}]*`,
+                ``,
+                `${'Kode Transaksi'.padEnd(labelPadding)}: *${kodeTransaksi}*`,
+                `-----------------------------------`,
+                `${'Email'.padEnd(labelPadding)}: ${email}`,
+                `${'Password'.padEnd(labelPadding)}: ${password}`
+            ];
 
-            const template = `*[AKUN PREMIUM NETFLIX]*
+            if (platform === 'Netflix Premium') {
+                templateLines.push(`${'Profil'.padEnd(labelPadding)}: *${profileName}*`);
+                templateLines.push(`${'PIN'.padEnd(labelPadding)}: *${pin || 'Tidak Ada'}*`);
+            }
 
-Kode Transaksi: *${kodeTransaksi}*
------------------------------------
-Email       : ${email}
-Password    : ${password}
-Profil      : *${profileName}*
-PIN         : *${pin || 'Tidak Ada'}*
-Status Akun : Shared
-Device      : *1 Profil untuk 1 Device*
-Paket       : Premium 4K UHD+
-Durasi      : *${durationText}*
-Aktif Sampai: *${formattedEndDate}*
+            templateLines.push(`${'Status Akun'.padEnd(labelPadding)}: ${accountType}`);
+            
+            if (platform === 'Netflix Premium') {
+                templateLines.push(`${'Device'.padEnd(labelPadding)}: *1 Profil untuk 1 Device*`);
+                templateLines.push(`${'Paket'.padEnd(labelPadding)}: Premium 4K UHD+`);
+            } else {
+                 templateLines.push(`${'Paket'.padEnd(labelPadding)}: Premium / Pro`);
+            }
 
-Terimakasih sudah order 🙏
+            templateLines.push(`${'Durasi'.padEnd(labelPadding)}: *${durationText}*`);
+            templateLines.push(`${'Aktif Sampai'.padEnd(labelPadding)}: *${formattedEndDate}*`);
+            templateLines.push(``);
+            templateLines.push(`Terimakasih sudah order 🙏`);
+            
+            // === LOGIKA BARU: CATATAN HANYA UNTUK NETFLIX ===
+            if (platform === 'Netflix Premium') {
+                templateLines.push(``);
+                templateLines.push("`TOLONG DIBACA`");
+                templateLines.push("S&K : https://rentry.co/snknetflix");
+            }
 
-\`TOLONG DIBACA\`
-S&K : https://rentry.co/snknetflix`;
-
-            document.getElementById('output').value = template;
+            document.getElementById('output').value = templateLines.join('\n');
         }
 
         function copyToClipboard() {
