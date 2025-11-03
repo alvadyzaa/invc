@@ -40,6 +40,30 @@
             margin-bottom: 18px; 
         }
 
+        /* --- BARU: Styling untuk checkbox perpanjang --- */
+        .form-group-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-group-checkbox input {
+            width: 18px; /* Ukuran checkbox */
+            height: 18px;
+        }
+        
+        .form-group-checkbox label {
+            margin: 0; /* Reset margin label */
+            font-weight: 500;
+            color: #495057;
+        }
+
+
         label { 
             display: block; 
             margin-bottom: 8px; 
@@ -47,7 +71,7 @@
             color: #495057;
         }
 
-        input[type="text"], input[type="email"], select { 
+        input[type="text"], input[type="email"], input[type="date"], select { 
             width: 100%; 
             padding: 12px; 
             border: 1px solid #ced4da; 
@@ -113,6 +137,11 @@
         }
         
         #manualEmailContainer {
+            display: none;
+        }
+
+        /* --- BARU: CSS untuk menyembunyikan form tanggal mulai --- */
+        #startDateContainer {
             display: none;
         }
 
@@ -185,6 +214,16 @@
             </div>
         </div>
         
+        <div class="form-group-checkbox">
+            <input type="checkbox" id="isExtension" onchange="toggleStartDate()">
+            <label for="isExtension">Perpanjang dari tanggal lain?</label>
+        </div>
+
+        <div class="form-group" id="startDateContainer">
+            <label for="startDate">Tanggal Berakhir Saat Ini:</label>
+            <input type="date" id="startDate">
+        </div>
+
         <div class="form-group">
             <label for="duration">Durasi Langganan:</label>
             <select id="duration">
@@ -203,7 +242,7 @@
                 <option value="12">12 Bulan</option>
             </select>
         </div>
-
+        
         <button onclick="generateOrder()">Buat Teks Orderan</button>
         <button onclick="copyToClipboard()" class="button-copy">Salin Teks</button>
 
@@ -242,6 +281,18 @@
             }
         });
         
+        // --- BARU: Fungsi untuk toggle input tanggal mulai ---
+        function toggleStartDate() {
+            const isExtension = document.getElementById('isExtension').checked;
+            const startDateContainer = document.getElementById('startDateContainer');
+            if (isExtension) {
+                startDateContainer.style.display = 'block';
+                document.getElementById('startDate').focus();
+            } else {
+                startDateContainer.style.display = 'none';
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', toggleForms);
 
         function generateOrder() {
@@ -265,7 +316,7 @@
             
             const durationSelect = document.getElementById('duration');
             const durationValue = durationSelect.value;
-            const durationText = durationSelect.options[durationSelect.selectedIndex].text;
+            let durationText = durationSelect.options[durationSelect.selectedIndex].text;
             
             if (!email || !password) {
                 alert('Harap isi kolom Email dan Password!');
@@ -276,22 +327,44 @@
                 return;
             }
 
-            const startDate = new Date();
-            const endDate = new Date(startDate);
+            // --- DIUBAH TOTAL: Logika perhitungan tanggal ---
+            
+            // 1. Tentukan Tanggal Mulai (startDate)
+            const isExtension = document.getElementById('isExtension').checked;
+            let startDate = new Date(); // Default: hari ini
+
+            if (isExtension) {
+                const startDateValue = document.getElementById('startDate').value;
+                if (!startDateValue) {
+                    alert('Untuk perpanjangan, harap pilih "Tanggal Berakhir Saat Ini"!');
+                    return;
+                }
+                // Parse tanggal custom untuk menghindari masalah timezone
+                const parts = startDateValue.split('-'); // Format: YYYY-MM-DD
+                startDate = new Date(parts[0], parts[1] - 1, parts[2]); // Bulan (0-indexed)
+            }
+
+            // 2. Hitung Tanggal Berakhir (endDate) berdasarkan startDate
+            let endDate = new Date(startDate); // Salin tanggal mulai
             
             if (durationValue === '7d') {
                 endDate.setDate(startDate.getDate() + 7);
             } else {
+                // parseInt aman di sini karena valuenya 1, 2, 3...
                 endDate.setMonth(startDate.getMonth() + parseInt(durationValue));
             }
 
+            // 3. Format tanggal berakhir untuk ditampilkan
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             const formattedEndDate = endDate.toLocaleDateString('id-ID', options);
+            
+            // --- Akhir perubahan logika tanggal ---
+
             const timestamp = Date.now();
             const kodeTransaksi = `TRX-${timestamp.toString().slice(-8)}`;
             
-          
-            const labelPadding = 14; // Jarak terpanjang dari label "Kode Transaksi"
+            
+            const labelPadding = 14; 
             
             let templateLines = [
                 `*[AKUN ${platform.toUpperCase()}]*`,
@@ -321,7 +394,6 @@
             templateLines.push(``);
             templateLines.push(`Terimakasih sudah order 🙏`);
             
-            // === LOGIKA BARU: CATATAN HANYA UNTUK NETFLIX ===
             if (platform === 'Netflix Premium') {
                 templateLines.push(``);
                 templateLines.push("`TOLONG DIBACA`");
@@ -345,4 +417,3 @@
 
 </body>
 </html>
-
