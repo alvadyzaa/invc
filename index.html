@@ -40,7 +40,6 @@
             margin-bottom: 18px; 
         }
 
-        /* --- BARU: Styling untuk checkbox --- */
         .form-group-checkbox {
             display: flex;
             align-items: center;
@@ -53,16 +52,15 @@
         }
         
         .form-group-checkbox input {
-            width: 18px; /* Ukuran checkbox */
+            width: 18px;
             height: 18px;
         }
         
         .form-group-checkbox label {
-            margin: 0; /* Reset margin label */
+            margin: 0;
             font-weight: 500;
             color: #495057;
         }
-        /* --- Akhir styling checkbox --- */
 
         label { 
             display: block; 
@@ -71,7 +69,6 @@
             color: #495057;
         }
 
-        /* Tipe date dihapus dari sini */
         input[type="text"], input[type="email"], select { 
             width: 100%; 
             padding: 12px; 
@@ -110,9 +107,23 @@
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
 
-        textarea { 
+        textarea#customNotes {
             width: 100%; 
-            height: 340px; 
+            padding: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 8px; 
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+            font-family: 'Figtree', sans-serif;
+            font-size: 14px;
+            height: 100px;
+            resize: vertical;
+        }
+
+        textarea#output { 
+            width: 100%; 
+            height: 360px; /* Sedikit diperbesar untuk muat teks garansi */
             margin-top: 20px; 
             padding: 15px; 
             border: 1px solid #ced4da; 
@@ -132,19 +143,11 @@
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
         }
 
-        #customEmailContainer {
-            display: none;
-            margin-top: 10px;
-        }
-        
-        #manualEmailContainer {
-            display: none;
-        }
-        
-        /* --- BARU: CSS untuk menyembunyikan form tanggal jatuh tempo --- */
-        #dueDateContainer {
-            display: none;
-        }
+        #customEmailContainer { display: none; margin-top: 10px; }
+        #manualEmailContainer { display: none; }
+        #dueDateContainer { display: none; }
+        #vidioSpecificFields { display: none; }
+        #netflixSpecificFields { display: none; }
 
     </style>
 </head>
@@ -156,17 +159,30 @@
         <div class="form-group">
             <label for="platform">Platform Akun:</label>
             <select id="platform">
-                <option value="Netflix Premium">Netflix Premium</option>
-                <option value="Capcut Pro">Capcut Pro</option>
-                <option value="HMA VPN">HMA VPN</option>
-                <option value="Express VPN">Express VPN</option>
                 <option value="Canva Pro">Canva Pro</option>
-                <option value="Spotify Premium">Spotify Premium</option>
-                <option value="Youtube Premium">Youtube Premium</option>
-                <option value="Prime Video">Prime Video</option>
-                <option value="Surfshark VPN">Surfshark VPN</option>
+                <option value="Capcut Pro">Capcut Pro</option>
                 <option value="Disney+ Hotstar">Disney+ Hotstar</option>
+                <option value="Express VPN">Express VPN</option>
+                <option value="HMA VPN">HMA VPN</option>
+                <option value="Netflix Premium">Netflix Premium</option>
+                <option value="Prime Video">Prime Video</option>
+                <option value="Spotify Premium">Spotify Premium</option>
+                <option value="Surfshark VPN">Surfshark VPN</option>
+                <option value="Vidio Platinum">Vidio Platinum</option>
+                <option value="Viu Premium">Viu Premium</option>
+                <option value="WeTV Premium">WeTV Premium</option>
+                <option value="Youtube Premium">Youtube Premium</option>
             </select>
+        </div>
+
+        <div id="vidioSpecificFields">
+            <div class="form-group">
+                <label for="vidioPackage">Pilih Paket Vidio:</label>
+                <select id="vidioPackage">
+                    <option value="Platinum Mobile">Platinum Mobile</option>
+                    <option value="Platinum (Mobile & TV)">Platinum (Mobile & TV)</option>
+                </select>
+            </div>
         </div>
         
         <div class="form-group">
@@ -224,6 +240,7 @@
             <label for="dueDateInput">Masukkan Tanggal Jatuh Tempo (DD-MM-YYYY):</label>
             <input type="text" id="dueDateInput" placeholder="Contoh: 1-11-2025">
         </div>
+        
         <div class="form-group">
             <label for="duration">Durasi Langganan:</label>
             <select id="duration">
@@ -243,6 +260,11 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="customNotes">Notes (Opsional):</label>
+            <textarea id="customNotes" placeholder="Ketik catatan tambahan di sini... (misal: S&K Disney+, dll)"></textarea>
+        </div>
+
         <button onclick="generateOrder()">Buat Teks Orderan</button>
         <button onclick="copyToClipboard()" class="button-copy">Salin Teks</button>
 
@@ -254,17 +276,32 @@
         const netflixEmailContainer = document.getElementById('netflixEmailContainer');
         const manualEmailContainer = document.getElementById('manualEmailContainer');
         const netflixSpecificFields = document.getElementById('netflixSpecificFields');
+        const vidioSpecificFields = document.getElementById('vidioSpecificFields');
         
         function toggleForms() {
             const selectedPlatform = platformSelect.value;
+            
+            netflixEmailContainer.style.display = 'none';
+            manualEmailContainer.style.display = 'none';
+            netflixSpecificFields.style.display = 'none';
+            vidioSpecificFields.style.display = 'none';
+
             if (selectedPlatform === 'Netflix Premium') {
                 netflixEmailContainer.style.display = 'block';
-                manualEmailContainer.style.display = 'none';
                 netflixSpecificFields.style.display = 'block';
-            } else {
-                netflixEmailContainer.style.display = 'none';
+            
+            } else if (selectedPlatform === 'Disney+ Hotstar') {
                 manualEmailContainer.style.display = 'block';
-                netflixSpecificFields.style.display = 'none';
+                netflixSpecificFields.style.display = 'block';
+                document.getElementById('manualEmailInput').focus();
+
+            } else if (selectedPlatform === 'Vidio Platinum') {
+                manualEmailContainer.style.display = 'block';
+                vidioSpecificFields.style.display = 'block';
+                document.getElementById('manualEmailInput').focus();
+            
+            } else {
+                manualEmailContainer.style.display = 'block';
                 document.getElementById('manualEmailInput').focus();
             }
         }
@@ -281,7 +318,6 @@
             }
         });
 
-        // --- FUNGSI BARU UNTUK TOGGLE INPUT JATUH TEMPO ---
         function toggleDueDateInput() {
             const useDueDate = document.getElementById('useDueDate').checked;
             const dueDateContainer = document.getElementById('dueDateContainer');
@@ -314,105 +350,114 @@
             const profileName = document.getElementById('profileName').value;
             const pin = document.getElementById('pin').value;
             
+            let vidioPackage = '';
+            if (platform === 'Vidio Platinum') {
+                vidioPackage = document.getElementById('vidioPackage').value;
+            }
+            
             const durationSelect = document.getElementById('duration');
             const durationValue = durationSelect.value;
             let durationText = durationSelect.options[durationSelect.selectedIndex].text;
+            
+            const customNotes = document.getElementById('customNotes').value.trim();
             
             if (!email || !password) {
                 alert('Harap isi kolom Email dan Password!');
                 return;
             }
-            if (platform === 'Netflix Premium' && !profileName) {
-                alert('Untuk Netflix, Nama Profil wajib diisi!');
+            
+            if ((platform === 'Netflix Premium' || platform === 'Disney+ Hotstar') && !profileName) {
+                alert(`Untuk ${platform}, Nama Profil wajib diisi!`);
                 return;
             }
-
-            // --- LOGIKA PERHITUNGAN TANGGAL BARU (DIUBAH TOTAL) ---
             
-            let startDate = new Date(); // Default: hitung dari hari ini
+            let startDate = new Date();
             const useDueDate = document.getElementById('useDueDate').checked;
 
             if (useDueDate) {
-                const dueDateString = document.getElementById('dueDateInput').value; // Ambil teks (misal "1-11-2025")
+                const dueDateString = document.getElementById('dueDateInput').value;
                 if (!dueDateString) {
                     alert('Harap masukkan tanggal jatuh tempo!');
                     return;
                 }
-                
-                const parts = dueDateString.split('-'); // Pecah string berdasarkan "-"
+                const parts = dueDateString.split('-');
                 if (parts.length !== 3) {
                     alert('Format tanggal salah. Harap gunakan DD-MM-YYYY (Contoh: 1-11-2025)');
                     return;
                 }
-                
-                // Urutkan: parts[0]=DD, parts[1]=MM, parts[2]=YYYY
                 const day = parseInt(parts[0]);
-                const month = parseInt(parts[1]) - 1; // JavaScript bulan 0-11
+                const month = parseInt(parts[1]) - 1;
                 const year = parseInt(parts[2]);
-                
-                startDate = new Date(year, month, day); // Set tanggal mulai hitung dari input
-                
-                // Cek jika tanggal valid
+                startDate = new Date(year, month, day);
                 if (isNaN(startDate.getTime())) {
                      alert('Tanggal tidak valid. Cek kembali input Anda.');
                      return;
                 }
             }
             
-            // 2. Hitung Tanggal Berakhir (endDate) berdasarkan startDate
-            let endDate = new Date(startDate); // Salin tanggal mulai
-            
+            let endDate = new Date(startDate);
             if (durationValue === '7d') {
                 endDate.setDate(startDate.getDate() + 7);
             } else {
                 endDate.setMonth(startDate.getMonth() + parseInt(durationValue));
             }
-
-            // 3. Format tanggal berakhir untuk ditampilkan
             const options = { day: 'numeric', month: 'long', year: 'numeric' };
             const formattedEndDate = endDate.toLocaleDateString('id-ID', options);
             
-            // --- AKHIR LOGIKA TANGGAL ---
-
             const timestamp = Date.now();
             const kodeTransaksi = `TRX-${timestamp.toString().slice(-8)}`;
-            
-            
-            const labelPadding = 14; 
+            const labelPadding = 19; 
             
             let templateLines = [
                 `*[AKUN ${platform.toUpperCase()}]*`,
                 ``,
-                `${'Kode Transaksi'.padEnd(labelPadding)}: *${kodeTransaksi}*`,
+                `${'🧾 Kode Transaksi'.padEnd(labelPadding)}: *${kodeTransaksi}*`,
                 `-----------------------------------`,
-                `${'Email'.padEnd(labelPadding)}: ${email}`,
-                `${'Password'.padEnd(labelPadding)}: ${password}`
+                `${'📧 Email'.padEnd(labelPadding)}: ${email}`,
+                `${'🔐 Password'.padEnd(labelPadding)}: ${password}`
             ];
 
-            if (platform === 'Netflix Premium') {
-                templateLines.push(`${'Profil'.padEnd(labelPadding)}: *${profileName}*`);
-                templateLines.push(`${'PIN'.padEnd(labelPadding)}: *${pin || 'Tidak Ada'}*`);
+            if (platform === 'Netflix Premium' || platform === 'Disney+ Hotstar') {
+                templateLines.push(`${'👤 Profil'.padEnd(labelPadding)}: *${profileName}*`);
+                templateLines.push(`${'🔢 PIN'.padEnd(labelPadding)}: *${pin || 'Tidak Ada'}*`);
             }
 
-            templateLines.push(`${'Status Akun'.padEnd(labelPadding)}: ${accountType}`);
+            templateLines.push(`${'📊 Status Akun'.padEnd(labelPadding)}: ${accountType}`);
             
             if (platform === 'Netflix Premium') {
-                templateLines.push(`${'Device'.padEnd(labelPadding)}: *1 Profil untuk 1 Device*`);
-                templateLines.push(`${'Paket'.padEnd(labelPadding)}: Premium 4K UHD+`);
+                templateLines.push(`${'📱 Device'.padEnd(labelPadding)}: *1 Profil untuk 1 Device*`);
+                templateLines.push(`${'📦 Paket'.padEnd(labelPadding)}: Premium 4K UHD+`);
+            } else if (platform === 'Vidio Platinum') {
+                templateLines.push(`${'📦 Paket'.padEnd(labelPadding)}: *${vidioPackage}*`);
             } else {
-                 templateLines.push(`${'Paket'.padEnd(labelPadding)}: Premium / Pro`);
+                 templateLines.push(`${'📦 Paket'.padEnd(labelPadding)}: Premium / Pro`);
             }
 
-            templateLines.push(`${'Durasi'.padEnd(labelPadding)}: *${durationText}*`);
-            templateLines.push(`${'Aktif Sampai'.padEnd(labelPadding)}: *${formattedEndDate}*`);
+            templateLines.push(`${'⏳ Durasi'.padEnd(labelPadding)}: *${durationText}*`);
+            templateLines.push(`${'🗓️ Aktif Sampai'.padEnd(labelPadding)}: *${formattedEndDate}*`);
             templateLines.push(``);
             templateLines.push(`Terimakasih sudah order 🙏`);
             
+            // --- DIUBAH: Logika S&K, Notes, dan Garansi ---
+            
+            // 1. Bagian "Notes" dari kotak teks manual (jika diisi)
+            if (customNotes) { 
+                templateLines.push(``);
+                templateLines.push(`📝 *Notes:*`);
+                templateLines.push(customNotes);
+            }
+
+            // 2. Teks Garansi (SELALU MUNCUL)
+            templateLines.push(``); // Kasih spasi
+            templateLines.push("Harap simpan data pembelian ini sebagai bukti resmi pembelian untuk keperluan klaim garansi.");
+
+            // 3. S&K Otomatis HANYA untuk Netflix (tetap ada)
             if (platform === 'Netflix Premium') {
                 templateLines.push(``);
-                templateLines.push("`TOLONG DIBACA`");
+                templateLines.push("📌 \`TOLONG DIBACA\`");
                 templateLines.push("S&K : https://bit.ly/recausentflx");
             }
+            // --- AKHIR PERUBAHAN ---
 
             document.getElementById('output').value = templateLines.join('\n');
         }
